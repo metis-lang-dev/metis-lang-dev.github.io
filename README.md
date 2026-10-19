@@ -19,7 +19,7 @@ Rules the content follows (website s-d21379cd, the architect's content design):
 - **The papers are the references.** The three PDFs and their LaTeX sources are linked from the repositories (`metis-lang/paper/`, `metis-catalog/paper/`, `metis-agent/paper/`); update the Papers rows when a draft's version moves.
 - Copy may be rewritten for rhythm; facts, numbers and fragments stay sourced. No "always"; no benchmark the repos don't have.
 - **The Q&A is the author's text, verbatim.** Its three essays are `essays.md` of the perotheia-packages checkout, kept word for word; only the HTML structure (a heading per question, paragraphs, the lists) is the page's. To check: strip the tags from the `essays` block and diff against the file, whitespace and list markers aside.
-- **The myth is cited.** The hero's caption paraphrases Hesiod, *Theogony* 886–900 and Apollodorus, *Library* 1.3.6; keep the shape honest (Metis does not escape; Zeus is the one who swallows her).
+- **The myth is cited.** The hero's caption paraphrases Hesiod, *Theogony* 886–900 and 924–926 and Apollodorus, *Library* 1.3.6; the armour-from-inside detail is hedged ("in some tellings": it is only in the lacuna after *Theogony* 929); keep the shape honest (Metis does not escape; Zeus is the one who swallows her).
 
 ## Checking a change locally
 
