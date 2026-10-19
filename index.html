@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>metis — behavior programs</title>
+<meta name="description" content="metis: a small language, LLP, in which a program is a catalog of typed, weighted rules and denotes a probability measure over its own runs; a certified runtime, a human-gated loop, a small local model that speaks for it.">
+<meta name="color-scheme" content="light dark">
+<!--
+  metis-lang-dev.github.io — one page, no build, no tracker, no external script or font.
+  Content: website s-d21379cd brief/content.md (the architect's design). Every number names its
+  source in a <!- - source: … - -> comment right before it; every fragment names its file.
+-->
+<style>
+:root {
+  --bg: #fbfaf7; --bg2: #f1efe9; --fg: #1d1c1a; --fg2: #5a5750; --line: #ddd9cf;
+  --accent: #b5471f; --accent2: #2d6a4f; --warn: #c0392b; --card: #ffffff; --code: #f3f1ea;
+  --world: #f7e9c4; --sun: #f0b429; --leaf: #3a7d44; --pot: #a0522d; --ok: #2d6a4f;
+  --max: 1040px; --gutter: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15161a; --bg2: #1d1f25; --fg: #e8e6e0; --fg2: #a8a59c; --line: #2f323a;
+    --accent: #f08a5d; --accent2: #7fc8a9; --warn: #ff7b6b; --card: #1b1d23; --code: #111218;
+    --world: #2a2a1f; --sun: #f0b429; --leaf: #6fbf73; --pot: #b5704f; --ok: #7fc8a9;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15161a; --bg2: #1d1f25; --fg: #e8e6e0; --fg2: #a8a59c; --line: #2f323a;
+  --accent: #f08a5d; --accent2: #7fc8a9; --warn: #ff7b6b; --card: #1b1d23; --code: #111218;
+  --world: #2a2a1f; --sun: #f0b429; --leaf: #6fbf73; --pot: #b5704f; --ok: #7fc8a9;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow-x: hidden; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.86em; }
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; line-height: 1.45; margin: 0; }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .4em; letter-spacing: -0.01em; }
+h2 { font-size: 1.7rem; margin-top: 0; }
+h3 { font-size: 1.15rem; }
+p { margin: 0 0 1em; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+section { padding: 56px 0; border-top: 1px solid var(--line); }
+.muted { color: var(--fg2); }
+.cap { color: var(--fg2); font-size: .92rem; margin-top: .6em; }
+.cap code { font-size: .95em; }
+/* header */
+header { position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); z-index: 5; }
+header .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 56px; flex-wrap: wrap; gap: 4px 12px; padding-block: 8px; }
+header .brand { font-weight: 700; font-size: 1.2rem; color: var(--fg); letter-spacing: -.02em; }
+header nav { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+header nav a { color: var(--fg2); font-size: .95rem; }
+@media (max-width: 600px) { header nav { gap: 12px; } header nav a { font-size: .85rem; } header nav a.hide-sm { display: none; } }
+/* hero */
+.hero { padding: 72px 0 40px; border-top: 0; }
+.hero h1 { font-size: clamp(2rem, 5.6vw, 3.4rem); max-width: 18ch; }
+.hero .lede { font-size: 1.15rem; max-width: 62ch; color: var(--fg2); }
+.btns { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.btn { display: inline-block; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--accent); color: var(--accent); font-weight: 600; }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn:hover { text-decoration: none; filter: brightness(1.08); }
+/* cards */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.card .layer { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+.card .paper { font-size: .92rem; color: var(--fg2); }
+.card .repos { font-size: .92rem; margin-top: auto; }
+/* fragment */
+.two { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+.notes { display: grid; gap: 10px; }
+.note { border-left: 3px solid var(--accent2); padding: 2px 0 2px 12px; font-size: .95rem; }
+.note b { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; }
+.hl-h { color: var(--accent); } .hl-p { color: var(--accent2); } .hl-r { color: var(--fg); font-weight: 600; } .hl-c { color: var(--fg2); font-style: italic; }
+/* terminal */
+.term { background: #111218; color: #d6d4cc; border-radius: 10px; padding: 14px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5; overflow-x: auto; border: 1px solid #2a2c33; }
+.term .add { color: #7fc8a9; } .term .hdr { color: #8fa3bf; } .term .ask { color: #f0b429; } .term .dim { color: #8a887f; }
+/* chat */
+.chat { max-width: 640px; display: flex; flex-direction: column; gap: 8px; }
+.b { max-width: 82%; padding: 9px 13px; border-radius: 16px; line-height: 1.4; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; }
+.chat.on .b, .chat.static .b { opacity: 1; transform: none; }
+.b.me { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.b.dog { align-self: flex-start; background: var(--bg2); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.b.rt { align-self: stretch; max-width: 100%; background: transparent; border: 1px dashed var(--line); border-radius: 8px; color: var(--fg2); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; padding: 6px 10px; }
+.b.rt .k { color: var(--accent2); }
+.chatbar { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+button.small { font: inherit; font-size: .9rem; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+button.small:hover { border-color: var(--accent); }
+/* animation */
+.anim-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; }
+.anim { width: 100%; min-width: 760px; height: auto; display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.anim text { fill: var(--fg); font-size: 13px; }
+.anim .lbl { fill: var(--fg2); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.anim .box { fill: var(--bg2); stroke: var(--line); }
+.anim .row { fill: var(--fg); font-size: 11px; }
+.anim .bar-bg { fill: var(--line); } .anim .bar { fill: var(--accent2); }
+.anim .card { fill: var(--card); stroke: var(--warn); }
+.anim .record text { fill: var(--warn); font-size: 11px; }
+.anim .diff text { font-size: 11px; } .anim .diff .add { fill: var(--ok); } .anim .diff .hdr { fill: var(--fg2); }
+.anim .new { fill: var(--ok); }
+.anim .bubble rect { fill: var(--bg2); stroke: var(--line); } .anim .bubble text { font-size: 12px; font-family: system-ui, sans-serif; }
+.anim .visitor { fill: var(--warn); font-size: 11px; font-weight: 700; }
+.anim .arrow { stroke: var(--fg2); fill: none; stroke-width: 1.5; }
+.anim .y { fill: var(--accent); font-weight: 700; }
+/* the loop: 12 s, every part on the same clock; base styles are the LAST frame (reduced motion shows it still) */
+.anim .a { animation-duration: 12s; animation-iteration-count: infinite; animation-timing-function: linear; animation-fill-mode: both; }
+.anim-wrap.paused .a { animation-play-state: paused; }
+@keyframes tick1 { 0%, 24% { opacity: 1 } 25%, 100% { opacity: 0 } }
+@keyframes tick2 { 0%, 24% { opacity: 0 } 25%, 61% { opacity: 1 } 62%, 100% { opacity: 0 } }
+@keyframes tick3 { 0%, 61% { opacity: 0 } 62%, 100% { opacity: 1 } }
+@keyframes bar { 0% { width: 0 } 10%, 26% { width: 112px } 30%, 62% { width: 0 } 72%, 100% { width: 126px } }
+@keyframes visitor { 0%, 24% { opacity: 0 } 27%, 100% { opacity: 1 } }
+@keyframes drop { 0%, 29% { opacity: 0 } 31%, 60% { opacity: 1 } 63%, 100% { opacity: 0 } }
+@keyframes record { 0%, 31% { opacity: 0; transform: translateX(-150px) } 36% { opacity: 1; transform: translateX(-150px) } 46%, 100% { opacity: 1; transform: translateX(0) } }
+@keyframes diff { 0%, 46% { opacity: 0 } 50%, 100% { opacity: 1 } }
+@keyframes ask { 0%, 50% { opacity: 0 } 53%, 100% { opacity: 1 } }
+@keyframes yes { 0%, 55% { opacity: 0 } 57%, 100% { opacity: 1 } }
+@keyframes newrow { 0%, 60% { opacity: 0; transform: translateY(-8px) } 66%, 100% { opacity: 1; transform: translateY(0) } }
+@keyframes bubble { 0%, 76% { opacity: 0; transform: translateY(6px) } 80%, 100% { opacity: 1; transform: translateY(0) } }
+.t1 { animation-name: tick1; opacity: 0 } .t2 { animation-name: tick2; opacity: 0 } .t3 { animation-name: tick3; opacity: 1 }
+.bar { animation-name: bar; width: 126px }
+.visitor { animation-name: visitor } .drop { animation-name: drop; opacity: 0 }
+.record { animation-name: record; transform-box: fill-box; }
+.diff { animation-name: diff } .ask { animation-name: ask } .y { animation-name: yes }
+.newrow { animation-name: newrow } .bubble { animation-name: bubble }
+.anim .beats { display: flex; gap: 6px; flex-wrap: wrap; }
+.anim-ctl { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 8px; }
+@media (prefers-reduced-motion: reduce) {
+  .anim .a { animation: none !important; }
+  .b { transition: none; opacity: 1; transform: none; }
+}
+:root[data-motion="off"] .anim .a { animation: none !important; }
+/* papers, start */
+.papers { display: grid; gap: 12px; }
+.paper-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; align-items: center; }
+@media (max-width: 600px) { .paper-row { grid-template-columns: 1fr; } }
+.status { font-size: .85rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg2); white-space: nowrap; }
+.status.pdf { color: var(--ok); border-color: var(--ok); }
+footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--fg2); font-size: .92rem; }
+.sr { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top">metis</a>
+    <nav>
+      <a href="#language">Language</a>
+      <a href="#catalog">Catalog &amp; Loop</a>
+      <a href="#agent">Agent</a>
+      <a href="#papers">Papers</a>
+      <a href="https://github.com/metis-lang-dev">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Behavior programs that know how likely they are.</h1>
+    <p class="lede">metis is a small language, LLP, in which a program is a catalog of typed, weighted rules — and denotes a probability measure over its own runs. A certified runtime evaluates it exactly in milliseconds; a human-gated loop grows it; a small local model speaks for it.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">Read the paper</a>
+      <a class="btn" href="https://github.com/metis-lang-dev">See the code</a>
+    </div>
+  </div>
+</section>
+
+<!-- §6 the animation: "a surprise closes the loop". Rule names from metis-catalog/domains/plant/plant.llp
+     (dry_out, water, check_moist); the surprise atom `visitor` is plant.llp's "the world's report: someone came by",
+     produced by no rule; the extension is extensions/visitor.llp, whose %% line is the bubble's text. -->
+<section id="loop" style="border-top:0; padding-top:0">
+  <div class="wrap">
+    <div class="anim-wrap" id="animwrap">
+      <svg class="anim" viewBox="0 0 960 330" role="img" aria-labelledby="animtitle animdesc">
+        <title id="animtitle">A surprise closes the loop</title>
+        <desc id="animdesc">The world shows a visitor the program has no rule for; the run's likelihood drops to zero; a surprise record goes to the loop; a person approves a proposed rule as a diff; the catalog gains extensions/visitor.llp; the probability refills; the device says: A visitor has watered me; my soil is moist again.</desc>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--fg2)"/></marker></defs>
+
+        <!-- 1. the world -->
+        <text class="lbl" x="24" y="26">1 · the world</text>
+        <rect class="box" x="24" y="36" width="200" height="130" rx="10" style="fill:var(--world)"/>
+        <circle cx="190" cy="66" r="14" style="fill:var(--sun)"/>
+        <path d="M100 150 h40 l-6 -40 h-28 z" style="fill:var(--pot)"/>
+        <path d="M120 112 c-2 -30 -26 -40 -40 -36 c4 14 18 28 40 36 z M120 112 c2 -30 26 -40 40 -36 c-4 14 -18 28 -40 36 z M120 112 v-30" style="fill:var(--leaf); stroke:var(--leaf); stroke-width:2"/>
+        <g class="a t1"><text x="34" y="56">tick 1</text></g>
+        <g class="a t2"><text x="34" y="56">tick 2</text></g>
+        <g class="a t3"><text x="34" y="56">tick 3</text></g>
+        <g class="a visitor"><text class="visitor" x="34" y="156">+ visitor</text></g>
+        <path class="arrow" d="M224 100 h26" marker-end="url(#ah)"/>
+
+        <!-- 2. the program; 3. the surprise -->
+        <text class="lbl" x="254" y="26">2 · the program</text>
+        <rect class="box" x="254" y="36" width="280" height="130" rx="10"/>
+        <text class="row" x="266" y="58">dry_out : moist * sun -o dry</text>
+        <text class="row" x="266" y="76">water : dry * cmd_water -o moist …</text>
+        <text class="row" x="266" y="94">check_moist : cmd_check * $moist …</text>
+        <g class="a newrow"><text class="row new" x="266" y="112">visitor_waters : dry * visitor -o moist</text></g>
+        <text class="lbl" x="266" y="146">P(run)</text>
+        <rect class="bar-bg" x="330" y="138" width="140" height="10" rx="5"/>
+        <rect class="a bar" x="330" y="138" height="10" rx="5"/>
+        <g class="a drop"><text class="visitor" x="254" y="188">3 · likelihood 0 — a surprise, recorded</text></g>
+        <path class="arrow" d="M534 100 h26" marker-end="url(#ah)"/>
+
+        <!-- 4. the loop -->
+        <text class="lbl" x="564" y="26">4 · the loop, as a gate</text>
+        <rect class="box" x="564" y="36" width="372" height="130" rx="10"/>
+        <g class="a record">
+          <rect class="card" x="576" y="46" width="214" height="40" rx="6"/>
+          <text x="586" y="63">surprise record</text>
+          <text x="586" y="78">+visitor: no rule produces it</text>
+        </g>
+        <g class="a diff">
+          <g class="diff">
+            <text class="hdr" x="576" y="106">+++ extensions/visitor.llp</text>
+            <text class="add" x="576" y="122">+ %% A visitor has watered me; my soil is moist again.</text>
+            <text class="add" x="576" y="138">+ visitor_waters [dyn] : dry * visitor -o moist.</text>
+          </g>
+        </g>
+        <g class="a ask"><text x="576" y="158">approve? <tspan class="dim">[y/n]</tspan></text></g>
+        <g class="a y"><text class="y" x="700" y="158">y</text></g>
+        <path class="arrow" d="M750 166 v22 h-250" marker-end="url(#ah)"/>
+
+        <!-- 5. the catalog grows; 6. the agent speaks -->
+        <text class="lbl" x="24" y="212">5 · the catalog grows → 6 · the device speaks</text>
+        <g class="a newrow"><text class="row new" x="24" y="236">extensions/visitor.llp → plant, served; P(run) refills on the next tick</text></g>
+        <g class="a bubble">
+          <g class="bubble">
+            <rect x="24" y="252" width="470" height="54" rx="14"/>
+            <text x="40" y="275">“A visitor has watered me; my soil is moist again.”</text>
+            <text class="lbl" x="40" y="295">the plant, from the rule's %% line</text>
+          </g>
+        </g>
+      </svg>
+      <div class="anim-ctl">
+        <span class="cap" style="margin:0">world → program → surprise → gated change → catalog → the device's words.</span>
+        <button class="small" id="pause" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <p class="cap">This is the purpose in one loop: the device's behaviour is a file people can read and approve, and it improves without retraining a model. (Rule names from <code>domains/plant/plant.llp</code>; the new rule and its words from <code>domains/plant/extensions/visitor.llp</code>, metis-catalog.)</p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <h2>Three layers, three papers</h2>
+    <div class="cards">
+      <article class="card" id="language">
+        <div class="layer">Layer 1 — the language</div>
+        <h3>LLP: typed, staged, weighted linear-logic rules, read three ways at once — as proofs, as runs, as a measure.</h3>
+        <!-- source: metis-lang/paper/metis.tex, abstract (draft 0.3, 2026-09-30): "exact parity chains … at 10^-9 across 200+" gates; "machine-checked in Lean 4" -->
+        <p>The OCaml compiler <code>metisc</code>, the Python referee <code>metispy</code>, a header-only C++ runtime; exact parity at 10<sup>-9</sup> across 200+ gates; a Lean 4 mechanization of the core theorems.</p>
+        <div class="paper">Paper: <em>Behavior Programs as Measures over Proofs</em> (draft 0.3, 2026-09-30)</div>
+        <div class="repos"><a href="https://github.com/metis-lang-dev/metis-lang">metis-lang</a> · <a href="https://github.com/metis-lang-dev/metispy">metispy</a></div>
+      </article>
+      <article class="card" id="catalog">
+        <div class="layer">Layer 2 — the catalog and the loop</div>
+        <h3>A program becomes a package: one directory, one manifest, one loader, built and run by both toolchains in CI.</h3>
+        <p>An agentic loop turns prose or a seed program into a package, exercises it against a simulated world, and proposes extensions — every write a diff a person approves.
+        <!-- source: 28 packages — catalog-packages s-a2c529d6 step 1 report (metis-catalog f25c758, the `packages` CI job); eight RDDL worlds — rddl-worlds s-242c7c3f step 3 and rddl-watch s-cfe94dca step 1 reports -->
+        28 packages today: story worlds, puzzles, planning, device domains, eight IPPC/RDDL worlds against pyRDDLGym.</p>
+        <div class="paper">Paper: <em>Behavior Catalogs in Practice</em> (draft, in preparation)</div>
+        <div class="repos"><a href="https://github.com/metis-lang-dev/metis-catalog">metis-catalog</a> · <a href="https://github.com/metis-lang-dev/metis-loop">metis-loop</a> · <a href="https://github.com/metis-lang-dev/metis-agentic-loop">metis-agentic-loop</a></div>
+      </article>
+      <article class="card" id="agent">
+        <div class="layer">Layer 3 — the agent</div>
+        <!-- source: Gemma 4 E2B Q4_K_M, 2136 MiB VRAM, 54/54 intents, 458 ms p50 — metis-agent docs/MODEL-EXPERIMENTS.md "Results and recommendation", table 1 (E1) -->
+        <h3>A small local model (Gemma 4 E2B, ~2 GB) does not own the device's state, procedure or safety; the runtime does.</h3>
+        <p>The model maps an utterance to one typed intent, narrates, proposes, asks. Two agents share one kernel; the device gets smarter by catalog changes, never by retraining.
+        <!-- source: py/Go parity on recorded days — metis-agent go/tools/dagent-parity.sh (RUNTIME-BINDING.md §7), docs/RUNTIME-PARITY.md -->
+        A Python dev stack and a Go embedded runtime, at parity on recorded days.</p>
+        <div class="paper">Paper: <em>Small Models, Certified Behavior</em> (draft, in preparation)</div>
+        <div class="repos"><a href="https://github.com/metis-lang-dev/metis-agent">metis-agent</a> · <a href="https://github.com/metis-lang-dev/fsttm-web">fsttm-web</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="fragment">
+  <div class="wrap">
+    <h2>A fragment of formalization</h2>
+    <div class="two">
+      <div>
+<!-- fragment: metis-catalog/domains/plant/plant.llp, lines 4–7, 11–12, 18, 20–24, 29, verbatim (the first two rules and their %% docs); the "…" marks lines left out -->
+<pre><code><span class="hl-h">catalog plant 1.</span>
+provenance text "a potted plant that dries out: the person waters it or asks how it is" "2026-10-15".
+layers (dyn).
+stages (main).
+…
+<span class="hl-p">pred moist : plant.
+pred dry : plant.</span>
+…
+pred visitor : plant.        <span class="hl-c">% the world's report: someone came by (the host, or the person's World tab)</span>
+
+stage main {
+  <span class="hl-c">%% The sun has been on me for a while; my soil dries out.</span>
+  <span class="hl-r">dry_out [dyn] : moist * sun -o dry.</span>
+  <span class="hl-c">%% When I am dry and you water me, my soil is moist again.</span>
+  <span class="hl-r">water [dyn] : dry * cmd_water -o moist * done(water).</span>
+  …
+}</code></pre>
+        <p class="cap">A rule is a linear-logic clause with a weight; <code>%%</code> lines are what the agent says about it. From <code>metis-catalog/domains/plant/plant.llp</code>, verbatim; <code>…</code> marks lines left out.</p>
+      </div>
+      <div class="notes">
+        <div class="note"><b>catalog plant 1.</b> — the header: a catalog has a name and a version; the loader lists it, CI builds it.</div>
+        <div class="note"><b>pred moist : plant.</b> — a typed predicate: atoms are resources in a multiset, counted, not just true or false.</div>
+        <div class="note"><b>moist * sun -o dry</b> — the rule: a linear implication. What is on the left is consumed, what is on the right is produced; <code>$</code> marks a premise only read. A weight on a rule, or a weight port bound by the host, prices its choice.</div>
+        <p class="cap">The same file is what <code>metisc</code> compiles, what the REPL runs, what CI replays against a committed trace, and what the agent narrates from.</p>
+      </div>
+    </div>
+
+    <div class="two" style="margin-top:28px">
+      <div>
+<!-- fragment: metis-catalog/domains/three_pigs/three_pigs.llp, lines 49–58 (its # case), verbatim -->
+<pre><code>#init pig 3
+#init wolf 1
+#init straw 1
+#init sticks 1
+#init bricks 1
+#steps 8
+#seeds 1
+#query strawhouse
+#query stickhouse
+#query brickhouse</code></pre>
+        <p class="cap">A case: the start, the horizon, the seeds, the questions. From <code>domains/three_pigs/three_pigs.llp</code>.</p>
+      </div>
+      <div>
+<!-- fragment: metis-catalog/goldens/traces/three_pigs.txt, whole file, verbatim (metisc --run's trace, committed; CI replays it) -->
+<pre><code>case three_pigs steps=8 seeds=1
+I pig 3
+I wolf 1
+I straw 1
+I sticks 1
+I bricks 1
+T 1 build_stick build_straw blow_straw build_brick blow_stick blow_brick
+F 1 (done) brickhouse:1
+Q strawhouse 0/1
+Q stickhouse 0/1
+Q brickhouse 1/1
+Q wolf 0/1</code></pre>
+        <p class="cap">Its trace, as CI commits and replays it: the start (<code>I</code>), the rules fired in order (<code>T</code>), the final state (<code>F</code>), the queries answered (<code>Q</code>). From <code>goldens/traces/three_pigs.txt</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gate">
+  <div class="wrap">
+    <h2>The loop, as a gate</h2>
+    <!-- fragment: the loop SDK's own dry run — `python -m metis_loop_sdk.catalog apply plant --extension visitor=domains/plant/extensions/visitor.llp --dry-run`
+         on a copy of metis-catalog's plant without its extension; the diff is the SDK's output verbatim, the proposal line and "approve? y" are the gate's shape in the loop console (a person's answer) -->
+    <div class="term" role="img" aria-label="A gate in the loop: the proposal, its diff, and the person's approval">
+<span class="dim">proposal</span>  plant: extension visitor — a visitor who waters the plant<br>
+<span class="hdr">--- a/domains/plant/extensions/visitor.llp</span><br>
+<span class="hdr">+++ b/domains/plant/extensions/visitor.llp</span><br>
+<span class="hdr">@@ -0,0 +1,6 @@</span><br>
+<span class="add">+catalog visitor 1.</span><br>
+<span class="add">+extends plant.</span><br>
+<span class="add">+stage main {</span><br>
+<span class="add">+  %% A visitor has watered me; my soil is moist again.</span><br>
+<span class="add">+  visitor_waters [dyn] : dry * visitor -o moist.</span><br>
+<span class="add">+}</span><br>
+<span class="ask">approve? [y/n]</span> y<br>
+<span class="dim">written</span>  domains/plant/extensions/visitor.llp (new)
+    </div>
+    <!-- source: 0.0624 USD by the key, six fiction programs, each program byte-equal to its seed (three_pigs_connectives differed by one comment line the person asked for) — fiction-port s-e3d0942d step 2 report -->
+    <p class="cap">Every change to a catalog is a diff a person reads. Six story programs were ported this way for 0.06 USD, each program byte-equal to its seed (one with a one-line comment change the person asked for). The diff above is the loop SDK's own dry run of plant's <code>extensions/visitor.llp</code> (<code>python -m metis_loop_sdk.catalog apply … --dry-run</code>); the proposal and approval lines are the gate's shape in the console.</p>
+  </div>
+</section>
+
+<section id="dialog">
+  <div class="wrap">
+    <h2>A dialog with the agent</h2>
+    <!-- simulated from recorded turns: the utterances are rows of metis-catalog/domains/dog/intent/dog-corpus.tsv (sit, go to the kitchen, stand up, walk to april tag three);
+         the intent JSON and the replies are the recorded day metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl (c1–c4: the py/Go parity fixture);
+         the dog's words are dog.llp's %% lines; the dog's name is the persona of intent/intent.yaml ("You are Nina, a quadruped robot dog") -->
+    <div class="chat" id="chat" aria-live="polite">
+      <div class="b me">sit</div>
+      <div class="b rt"><span class="k">intent</span> {"verb": "LOCAL_ACTION", "args": {"action": "SIT_DOWN"}} → <span class="k">runtime</span> Accepted.</div>
+      <div class="b dog">I sit down.</div>
+      <div class="b me">go to the kitchen</div>
+      <div class="b rt"><span class="k">intent</span> {"verb": "NAVIGATE", "args": {"goal": {"type": "REGION", "description": "kitchen"}}} → <span class="k">runtime</span> Accepted.</div>
+      <div class="b dog">I can't go to the kitchen: the way to it is closed.</div>
+      <div class="b me">stand up</div>
+      <div class="b rt"><span class="k">intent</span> {"verb": "LOCAL_ACTION", "args": {"action": "STAND_UP"}} → <span class="k">runtime</span> Accepted.</div>
+      <div class="b dog">I stand up.</div>
+      <div class="b me">walk to april tag three</div>
+      <div class="b rt"><span class="k">intent</span> {"verb": "NAVIGATE", "args": {"goal": {"type": "TAG", "description": "tag"}, "tag_id": 3}} → <span class="k">runtime</span> Accepted.</div>
+      <div class="b dog">I set off for tag 3.</div>
+      <div class="b dog">I have arrived at tag 3.</div>
+    </div>
+    <div class="chatbar"><button class="small" id="replay">Replay</button><span class="cap" style="margin:0">Nina, the dog of the catalog's <code>dog</code> package.</span></div>
+    <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the one in <code>intent/intent.yaml</code>.</p>
+  </div>
+</section>
+
+<section id="papers">
+  <div class="wrap">
+    <h2>Papers</h2>
+    <div class="papers">
+      <div class="paper-row">
+        <div><strong>Behavior Programs as Measures over Proofs</strong><br><span class="muted">the language — draft 0.3, 2026-09-30</span></div>
+        <div><span class="status pdf">PDF</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">PDF</a> · <a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.tex">LaTeX</a> · <a href="https://github.com/metis-lang-dev/metis-lang">repo</a></div>
+      </div>
+      <div class="paper-row">
+        <div><strong>Behavior Catalogs in Practice</strong><br><span class="muted">the catalog and the loop</span></div>
+        <div><span class="status">draft, in preparation</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-catalog">repo</a></div>
+      </div>
+      <div class="paper-row">
+        <div><strong>Small Models, Certified Behavior</strong><br><span class="muted">the agent</span></div>
+        <div><span class="status">draft, in preparation</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-agent">repo</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <h2>Get started</h2>
+<!-- verbatim lines: metis-lang/README.md "Using the compiler"; metis-catalog/CATALOG.md (the loader's CLI); metis-agentic-loop/README.md (the demo) -->
+<pre><code><span class="hl-c"># metis-lang (README, "Using the compiler")</span>
+src/metisc --run corpus/love_triangle.llp   # replay a file's embedded
+                                            # '#'-directive case (spec §8)
+src/metisc --wire corpus/catalog/plant/plant.llp \
+    --extension corpus/catalog/plant/extensions/visitor.llp
+<span class="hl-c"># metis-catalog (CATALOG.md)</span>
+python -m metis_catalog list [--domains] [--json]    # what both consoles list
+<span class="hl-c"># metis-agentic-loop (README)</span>
+./demo.sh                                    # a fresh ~/lamp-demo-&lt;date&gt;-&lt;time&gt;; or ./demo.sh DIR</code></pre>
+    <p class="cap">Each line as its README writes it; the repos say what to install first.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    metis is research software, pre-release. © 2026 Robofortis. Code under Apache-2.0 where the repository says so.
+    &nbsp;·&nbsp; <a href="https://github.com/metis-lang-dev">github.com/metis-lang-dev</a> &nbsp;·&nbsp; <a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">the paper</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // ?theme=dark|light and ?motion=off: the same CSS the OS settings select, for a screenshot or a check
+  var q = new URLSearchParams(location.search);
+  if (q.get("theme") === "dark" || q.get("theme") === "light") document.documentElement.dataset.theme = q.get("theme");
+  if (q.get("motion") === "off") document.documentElement.dataset.motion = "off";
+
+  // the animation's Pause
+  var wrap = document.getElementById("animwrap"), pause = document.getElementById("pause");
+  pause.addEventListener("click", function () {
+    var on = wrap.classList.toggle("paused");
+    pause.textContent = on ? "Play" : "Pause";
+    pause.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+
+  // the chat: bubbles appear one by one when scrolled into view (all at once under reduced motion)
+  var chat = document.getElementById("chat"), bubbles = chat.querySelectorAll(".b"), timers = [];
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "off";
+  function play() {
+    timers.forEach(clearTimeout); timers = [];
+    chat.classList.remove("on", "static");
+    bubbles.forEach(function (b) { b.style.opacity = ""; b.style.transform = ""; });
+    if (reduced) { chat.classList.add("static"); return; }
+    var t = 0;
+    bubbles.forEach(function (b) {
+      t += b.classList.contains("rt") ? 500 : 900;
+      timers.push(setTimeout(function () { b.style.opacity = 1; b.style.transform = "none"; }, t));
+    });
+  }
+  document.getElementById("replay").addEventListener("click", play);
+  if ("IntersectionObserver" in window) {
+    var seen = false, io = new IntersectionObserver(function (es) {
+      if (!seen && es.some(function (e) { return e.isIntersecting; })) { seen = true; play(); io.disconnect(); }
+    }, { threshold: 0.2 });
+    io.observe(chat);
+  } else play();
+})();
+</script>
+</body>
+</html>
