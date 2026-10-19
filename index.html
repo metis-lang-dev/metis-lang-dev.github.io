@@ -3,9 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>metis — behavior programs</title>
+<title>metis-lang — behavior programs</title>
 <meta name="description" content="metis: a small language, LLP, in which a program is a catalog of typed, weighted rules and denotes a probability measure over its own runs; a certified runtime, a human-gated loop, a small local model that speaks for it.">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="metis-lang — behavior programs that know how likely they are">
+<meta property="og:description" content="A small language, LLP, in which a program is a catalog of typed, weighted rules and denotes a probability measure over its own runs; a certified runtime, a human-gated loop, a small local model that speaks for it.">
+<meta property="og:url" content="https://metis-lang-dev.github.io/">
+<meta property="og:image" content="https://metis-lang-dev.github.io/assets/metis-lang.jpg">
+<meta property="og:image:width" content="400">
+<meta property="og:image:height" content="400">
+<meta name="twitter:card" content="summary">
 <!--
   metis-lang-dev.github.io — one page, no build, no tracker, no external script or font.
   Content: website s-d21379cd brief/content.md (the architect's design). Every number names its
@@ -50,12 +61,27 @@ section { padding: 56px 0; border-top: 1px solid var(--line); }
 /* header */
 header { position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); z-index: 5; }
 header .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 56px; flex-wrap: wrap; gap: 4px 12px; padding-block: 8px; }
-header .brand { font-weight: 700; font-size: 1.2rem; color: var(--fg); letter-spacing: -.02em; }
+header .brand { font-weight: 700; font-size: 1.2rem; color: var(--fg); letter-spacing: -.02em; display: inline-flex; align-items: center; gap: 8px; }
+header .mark { width: 24px; height: 24px; border-radius: 50%; }
 header nav { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
 header nav a { color: var(--fg2); font-size: .95rem; }
 @media (max-width: 600px) { header nav { gap: 12px; } header nav a { font-size: .85rem; } header nav a.hide-sm { display: none; } }
 /* hero */
-.hero { padding: 72px 0 40px; border-top: 0; }
+.hero { padding: 56px 0 40px; border-top: 0; }
+.hero-grid { display: grid; grid-template-columns: 1fr 240px; gap: 32px 48px; align-items: start; }
+.hero-grid .hero-text { grid-column: 1; grid-row: 1; }
+.hero-grid .avatar { grid-column: 2; grid-row: 1; margin: 8px 0 0; text-align: center; }
+.avatar img { width: 200px; height: 200px; border-radius: 50%; display: block; margin: 0 auto 14px; box-shadow: 0 2px 12px rgba(0,0,0,.18); }
+.avatar figcaption { text-align: left; }
+.avatar .allusion { font-size: .95rem; margin: 0 0 .5em; color: var(--fg); }
+.avatar .myth { font-size: .8rem; color: var(--fg2); margin: 0; line-height: 1.45; }
+@media (max-width: 820px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 20px; }
+  .hero-grid .avatar { grid-column: 1; grid-row: 1; margin: 0; }
+  .hero-grid .hero-text { grid-row: 2; }
+  .avatar img { width: 120px; height: 120px; margin-bottom: 10px; }
+  .avatar figcaption { text-align: center; max-width: 40ch; margin: 0 auto; }
+}
 .hero h1 { font-size: clamp(2rem, 5.6vw, 3.4rem); max-width: 18ch; }
 .hero .lede { font-size: 1.15rem; max-width: 62ch; color: var(--fg2); }
 .btns { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
@@ -140,6 +166,17 @@ button.small:hover { border-color: var(--accent); }
 .anim.stacked .p3 { transform: translate(-540px, 370px); }
 .anim.stacked .p4 { transform: translate(0, 340px); }
 .anim.stacked .flow { display: none; }
+/* Q&A */
+.essays details { border-top: 1px solid var(--line); padding: 10px 0; }
+.essays details:last-child { border-bottom: 1px solid var(--line); }
+.essays summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 10px; }
+.essays summary::-webkit-details-marker { display: none; }
+.essays summary::before { content: "▸"; color: var(--accent2); font-size: .9em; }
+.essays details[open] summary::before { content: "▾"; }
+.essays summary h3 { display: inline; margin: 0; font-size: 1.1rem; }
+.qa-body { max-width: 72ch; }
+.qa-body p, .qa-body li { line-height: 1.6; }
+.qa-body ul { padding-left: 1.2em; }
 /* papers, start */
 .papers { display: grid; gap: 12px; }
 .paper-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; align-items: center; }
@@ -154,12 +191,13 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
 
 <header>
   <div class="wrap">
-    <a class="brand" href="#top">metis</a>
+    <a class="brand" href="#top"><img class="mark" src="assets/metis-lang.jpg" alt="" width="24" height="24"> metis-lang</a>
     <nav>
       <a href="#language">Language</a>
       <a href="#catalog">Catalog &amp; Loop</a>
       <a href="#agent">Agent</a>
       <a href="#papers">Papers</a>
+      <a href="#qa">Q&amp;A</a>
       <a href="https://github.com/metis-lang-dev">GitHub</a>
     </nav>
   </div>
@@ -168,12 +206,22 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
 <main id="top">
 
 <section class="hero">
-  <div class="wrap">
+  <div class="wrap hero-grid">
+    <figure class="avatar">
+      <img src="assets/metis-lang.jpg" alt="The metis-lang mark: the organization's avatar" width="400" height="400">
+      <figcaption>
+        <p class="allusion">metis-lang is named for Metis: it equips small models, so a device need not be swallowed by the largest models to behave well.</p>
+        <!-- the myth: Hesiod, Theogony 886–900 (Zeus makes Metis his first wife; counselled by Gaia and Ouranos he swallows her while she carries Athena, so that no other god should hold the kingship; Athena is born from his head); Apollodorus, Library 1.3.6 (the same, and Athena springs from the head fully armed when it is struck open). Metis does not escape; the swallower is Zeus. -->
+        <p class="myth">In the myth, Zeus swallowed Metis while she carried their daughter; from inside him she equipped the child, and Athena came out of his head whole and armed (Hesiod, <em>Theogony</em> 886–900; Apollodorus, <em>Library</em> 1.3.6).</p>
+      </figcaption>
+    </figure>
+    <div class="hero-text">
     <h1>Behavior programs that know how likely they are.</h1>
-    <p class="lede">metis is a small language, LLP, in which a program is a catalog of typed, weighted rules — and denotes a probability measure over its own runs. A certified runtime evaluates it exactly in milliseconds; a human-gated loop grows it; a small local model speaks for it.</p>
+    <p class="lede">metis-lang is a small language, LLP, in which a program is a catalog of typed, weighted rules — and denotes a probability measure over its own runs. A certified runtime evaluates it exactly in milliseconds; a human-gated loop grows it; a small local model speaks for it.</p>
     <div class="btns">
       <a class="btn primary" href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">Read the paper</a>
       <a class="btn" href="https://github.com/metis-lang-dev">See the code</a>
+    </div>
     </div>
   </div>
 </section>
@@ -453,11 +501,61 @@ python -m metis_catalog list [--domains] [--json]    # what both consoles list
   </div>
 </section>
 
+<section id="qa">
+  <div class="wrap">
+    <h2>Q&amp;A</h2>
+    <p class="muted">Three questions the project's architect answered for its author, kept as written.</p>
+    <!-- the three essays of essays.md (the repository's author's notes), verbatim: HTML structure only (a heading per question, paragraphs, the lists as lists) -->
+    <div class="essays">
+<details class="qa" open>
+<summary><h3>Q1. What it buys us, practically</h3></summary>
+<div class="qa-body">
+<p>Ordinary programs do what they say and nothing else. If you want to know how likely a program is to reach some state, you have to build a second thing beside it: a model, a simulator, a statistical estimate from many runs. The program and the model drift apart the moment one of them is edited, and neither can tell you that the other is wrong.</p>
+<p>The idea here is to refuse the split. A program is written as a catalog of rules over a state that is a bag of resources: each rule says what it consumes and what it produces, and carries a weight. Whenever several rules could fire, the weights say how likely each is. That single addition changes what the text is. The same rules, read one way, are an executable: pick a rule, fire it, repeat. Read another way, they are a model: every possible sequence of firings is a run, and the weights give every run a probability. There is no second artifact to keep in sync, because the model is the program.</p>
+<p>What that buys, concretely:</p>
+<ul>
+<li>A run can be priced. Any trajectory, your own or one the world hands you, has a likelihood under the program. So &quot;was that expected?&quot; is a number, not a feeling.</li>
+<li>Surprise becomes a defined event. If the world does something the program gives zero or near-zero probability to, you know it, at the moment it happens, and you know which rule or which missing rule is implicated. Debugging a model of the world turns into reading a diff.</li>
+<li>Consistency is checkable. Because every rule is a typed resource transaction, a wrong rule often fails before it runs: it consumes what cannot exist, or produces what nothing can consume. Many modeling errors become type errors.</li>
+<li>Learning is local. The structure of the world is written by a person; only the weights are fitted from data. When the fit is bad, you can see which rule&#x27;s weight is off, instead of staring at an opaque loss.</li>
+<li>Exactness where it is affordable, sampling where it is not. Because the set of runs has a known shape, you can compute likelihoods exactly for small worlds and fall back to seeded sampling for large ones, and you always know which of the two you got.</li>
+<li>Behaviour stays a text. The thing that decides what a device does is a file a person can read, diff, approve and version. Improvement is a change to the file, not a retraining.</li>
+</ul>
+</div>
+</details>
+<details class="qa" open>
+<summary><h3>Q2. How it derives from logic and probability</h3></summary>
+<div class="qa-body">
+<p>Start with the logic. Classical logic is about truth: a fact, once true, stays true, and you can use it as often as you like. That is the wrong logic for the physical world, where a cup of water used is a cup of water gone. Linear logic fixes this by treating facts as resources. A rule A, B ⊸ C does not say &quot;if A and B then C&quot;; it says &quot;consume one A and one B, produce one C.&quot; A state is a multiset of such resources, and running the program is finding a proof: a sequence of rule applications that transforms the starting multiset into another. Every run is literally a derivation in the logic, and the logic guarantees that derivations respect conservation: nothing is used that was not there.</p>
+<p>Now the probability. A proof search has choice points: several rules apply, and the logic alone does not prefer any. Classical proof search resolves them by strategy; here, each choice is a random draw with the rules&#x27; weights as odds. A run is a path through a tree of choices, and its probability is the product of the choices along it. Summing over all paths, the program defines a probability distribution on its derivations. That is the whole construction: logic supplies the space of possible histories, probability supplies a measure on it.</p>
+<p>Two consequences are worth seeing clearly. First, this is exactly the mathematics of mass-action kinetics: rules are reactions, resources are molecules, weights are rate constants. A chemist would recognize the state space immediately, and the same machinery that gives chemistry its master equation gives these programs their measure. Second, the measure is on histories, not on states. Two runs that reach the same final state by different routes are different events with different probabilities. That is more information than a state-based model holds, and it is why a trajectory the world hands you can be priced as a whole.</p>
+<p>There is a subtler point about what counts as &quot;the same run.&quot; Two firings that do not touch each other&#x27;s resources could have happened in either order, and nothing in the world distinguishes the orders. The honest object to assign probability to is the causal shape of the run, with independent firings unordered, rather than one arbitrary serialization of it. When a program&#x27;s rules are such that this quotient is well-defined, the measure descends to it: runs weigh their causal structure, not their interleavings. That is where logic earns its keep: the proof-theoretic view sees the causal structure directly, where a simulator only ever sees one interleaving at a time.</p>
+</div>
+</details>
+<details class="qa" open>
+<summary><h3>Q3. Running in the real world: is uncertainty anticipated, or merely absorbed?</h3></summary>
+<div class="qa-body">
+<p>The old objection to logic in the real world was that logic decides truth, and the world does not deliver truths; it delivers noisy, partial, surprising observations. A rule-based system that insists on truth either refuses to act or acts wrongly with full confidence.</p>
+<p>This approach dodges the objection by changing what the logic is asked to do. It is not asked to decide what is true. It is asked to enumerate what is possible and to say how likely each possibility is. Uncertainty enters in two places, and both are explicit in the text. At every choice point, the weights encode the program&#x27;s own uncertainty about what it will do next. At the boundary with the world, some rules consume resources the program never produces: observations that arrive from outside. Those rules carry weights too, so an observation is not a truth that overrides the model; it is an event the model had a price for. If the price was reasonable, the run continues and the likelihood updates. If the price was zero, the model was wrong in a specific place, and that place is named.</p>
+<p>So: yes, uncertainty is anticipated, but only within the vocabulary the program has. This is the honest limit. The program cannot be surprised by something it has no word for; an observation outside its predicate set is not &quot;unlikely,&quot; it is unrepresentable, and detecting it needs machinery outside the measure. Likewise, the weights are only as true as whoever fitted them, and a model can be smoothly, confidently wrong if its rules are the wrong rules with well-fitted rates. What the approach guarantees is not correctness but accountability: when the world and the program disagree, the disagreement is located, priced, and expressible as an edit.</p>
+<p>Is it a solution to the logic-versus-uncertainty problem, a step, or a different form of computation? I would say all three, in different senses.</p>
+<ul>
+<li>It solves a specific version of the problem: a deterministic executable and a probabilistic model of the same behaviour are, by construction, the same object, so they cannot disagree. Everyone who has maintained a controller and a separate simulator of it knows what that removes.</li>
+<li>It is a step on the larger problem, because it fixes the vocabulary in advance. The open-world problem, finding out that your predicates are the wrong predicates, is not solved by a measure over proofs; it is moved to the loop around the program, where a person or a model proposes new rules and a gate decides whether to admit them. The measure makes that loop possible, by telling you when and where you need it, but it does not close it alone.</li>
+<li>And it is a different form of computation, in that execution and inference are the same act. Running the program forward is sampling a proof; scoring a trajectory is weighing a proof; learning is adjusting the weights on proofs you have seen. A conventional program computes a result; this kind computes a result and knows how likely it was to compute it. That is a smaller thing than general intelligence and a larger thing than a planner. It is a behaviour that carries its own model of itself, which is what you need before anything can be made responsible for what it does.</li>
+</ul>
+<p>That last point is the practical reason it matters for devices: a system that can say &quot;this is what I expected, this is what happened, and here is the gap, in your own words&quot; can be supervised, by a person or by something much less trustworthy than a person, without handing either of them the controls.</p>
+</div>
+</details>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer>
   <div class="wrap">
-    metis is research software, pre-release. © 2026 Robofortis. Code under Apache-2.0 where the repository says so.
+    metis-lang is research software, pre-release. © 2026 Robofortis. Code under Apache-2.0 where the repository says so.
     &nbsp;·&nbsp; <a href="https://github.com/metis-lang-dev">github.com/metis-lang-dev</a> &nbsp;·&nbsp; <a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">the paper</a>
   </div>
 </footer>
@@ -465,12 +563,15 @@ python -m metis_catalog list [--domains] [--json]    # what both consoles list
 <script>
 (function () {
   // ?theme=dark|light and ?motion=off: the same CSS the OS settings select, for a screenshot or a check
-  var q = new URLSearchParams(location.search);
+  var q = new URLSearchParams(location.search), narrow = matchMedia("(max-width: 640px)");
   if (q.get("theme") === "dark" || q.get("theme") === "light") document.documentElement.dataset.theme = q.get("theme");
   if (q.get("motion") === "off") document.documentElement.dataset.motion = "off";
 
+  // the Q&A on a phone: collapsed until opened (open on a desktop, and open without the script)
+  if (narrow.matches) document.querySelectorAll(".essays details").forEach(function (d) { d.removeAttribute("open"); });
+
   // the animation on a phone: its four panels stacked (CSS .stacked moves them; the viewBox follows)
-  var svg = document.getElementById("anim"), narrow = matchMedia("(max-width: 640px)");
+  var svg = document.getElementById("anim");
   function fit() {
     svg.classList.toggle("stacked", narrow.matches);
     svg.setAttribute("viewBox", narrow.matches ? "0 0 480 660" : "0 0 960 330");
