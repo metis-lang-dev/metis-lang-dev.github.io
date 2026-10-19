@@ -82,7 +82,7 @@ header nav a { color: var(--fg2); font-size: .95rem; }
 .term .add { color: #7fc8a9; } .term .hdr { color: #8fa3bf; } .term .ask { color: #f0b429; } .term .dim { color: #8a887f; }
 /* chat */
 .chat { max-width: 640px; display: flex; flex-direction: column; gap: 8px; }
-.b { max-width: 82%; padding: 9px 13px; border-radius: 16px; line-height: 1.4; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; }
+.b { max-width: 82%; padding: 9px 13px; border-radius: 16px; line-height: 1.4; transition: opacity .35s, transform .35s; }   /* visible without the script, which hides then plays them */
 .chat.on .b, .chat.static .b { opacity: 1; transform: none; }
 .b.me { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
 .b.dog { align-self: flex-start; background: var(--bg2); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
@@ -101,7 +101,7 @@ button.small:hover { border-color: var(--accent); }
 .anim .bar-bg { fill: var(--line); } .anim .bar { fill: var(--accent2); }
 .anim .card { fill: var(--card); stroke: var(--warn); }
 .anim .record text { fill: var(--warn); font-size: 11px; }
-.anim .diff text { font-size: 11px; } .anim .diff .add { fill: var(--ok); } .anim .diff .hdr { fill: var(--fg2); }
+.anim .diff text { font-size: 10.5px; } .anim .diff .add { fill: var(--ok); } .anim .diff .hdr { fill: var(--fg2); }
 .anim .new { fill: var(--ok); }
 .anim .bubble rect { fill: var(--bg2); stroke: var(--line); } .anim .bubble text { font-size: 12px; font-family: system-ui, sans-serif; }
 .anim .visitor { fill: var(--warn); font-size: 11px; font-weight: 700; }
@@ -179,14 +179,14 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
 </section>
 
 <!-- §6 the animation: "a surprise closes the loop". Rule names from metis-catalog/domains/plant/plant.llp
-     (dry_out, water, check_moist); the surprise atom `visitor` is plant.llp's "the world's report: someone came by",
-     produced by no rule; the extension is extensions/visitor.llp, whose %% line is the bubble's text. -->
+     (dry_out, water, check_moist); `visitor` is plant.llp's input atom "the world's report: someone came by"; the surprise is the
+     reading (moist again) that no run of the program reaches; the extension is extensions/visitor.llp, whose %% line is the bubble's text. -->
 <section id="loop" style="border-top:0; padding-top:0">
   <div class="wrap">
     <div class="anim-wrap" id="animwrap">
       <svg class="anim" id="anim" viewBox="0 0 960 330" role="img" aria-labelledby="animtitle animdesc">
         <title id="animtitle">A surprise closes the loop</title>
-        <desc id="animdesc">The world shows a visitor the program has no rule for; the run's likelihood drops to zero; a surprise record goes to the loop; a person approves a proposed rule as a diff; the catalog gains extensions/visitor.llp; the probability refills; the device says: A visitor has watered me; my soil is moist again.</desc>
+        <desc id="animdesc">The world reports a visitor and the plant is moist again, which no run of the program explains; the likelihood drops to zero; a surprise record goes to the loop; a person approves a proposed rule as a diff; the catalog gains extensions/visitor.llp; the probability refills; the device says: A visitor has watered me; my soil is moist again.</desc>
         <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--fg2)"/></marker></defs>
 
         <!-- 1. the world -->
@@ -223,9 +223,9 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <text class="lbl" x="564" y="26">4 · the loop, as a gate</text>
         <rect class="box" x="564" y="36" width="372" height="130" rx="10"/>
         <g class="a record">
-          <rect class="card" x="576" y="46" width="214" height="40" rx="6"/>
+          <rect class="card" x="576" y="46" width="240" height="40" rx="6"/>
           <text x="586" y="63">surprise record</text>
-          <text x="586" y="78">+visitor: no rule produces it</text>
+          <text x="586" y="78">moist again: no path explains it</text>
         </g>
         <g class="a diff">
           <g class="diff">
@@ -242,7 +242,7 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <!-- 5. the catalog grows; 6. the agent speaks -->
         <g class="panel p4">
         <text class="lbl" x="24" y="212">5 · the catalog grows → 6 · the device speaks</text>
-        <g class="a newrow"><text class="row new" x="24" y="236">extensions/visitor.llp → plant, served; P(run) refills on the next tick</text></g>
+        <g class="a newrow"><text class="row new" x="24" y="236">extensions/visitor.llp served; P(run) refills next tick</text></g>
         <g class="a bubble">
           <g class="bubble">
             <rect x="24" y="252" width="440" height="54" rx="14"/>
@@ -268,8 +268,8 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
       <article class="card" id="language">
         <div class="layer">Layer 1 — the language</div>
         <h3>LLP: typed, staged, weighted linear-logic rules, read three ways at once — as proofs, as runs, as a measure.</h3>
-        <!-- source: metis-lang/paper/metis.tex, abstract (draft 0.3, 2026-09-30): "exact parity chains … at 10^-9 across 200+" gates; "machine-checked in Lean 4" -->
-        <p>The OCaml compiler <code>metisc</code>, the Python referee <code>metispy</code>, a header-only C++ runtime; exact parity at 10<sup>-9</sup> across 200+ gates; a Lean 4 mechanization of the core theorems.</p>
+        <!-- source: metis-lang/paper/metis.tex, abstract (draft 0.3, 2026-09-30): "exact parity chains … at 10^-9 across 200+" gates; "a growing Lean 4 mechanization of the metatheory" -->
+        <p>The OCaml compiler <code>metisc</code>, the Python referee <code>metispy</code>, a header-only C++ runtime; exact parity at 10<sup>-9</sup> across 200+ gates; a growing Lean 4 mechanization of the metatheory.</p>
         <div class="paper">Paper: <em>Behavior Programs as Measures over Proofs</em> (draft 0.3, 2026-09-30)</div>
         <div class="repos"><a href="https://github.com/metis-lang-dev/metis-lang">metis-lang</a> · <a href="https://github.com/metis-lang-dev/metispy">metispy</a></div>
       </article>
@@ -380,11 +380,12 @@ Q wolf 0/1</code></pre>
 <span class="add">+  %% A visitor has watered me; my soil is moist again.</span><br>
 <span class="add">+  visitor_waters [dyn] : dry * visitor -o moist.</span><br>
 <span class="add">+}</span><br>
+<span class="hdr">\ No newline at end of file</span><br>
 <span class="ask">approve? [y/n]</span> y<br>
 <span class="dim">written</span>  domains/plant/extensions/visitor.llp (new)
     </div>
-    <!-- source: 0.0624 USD by the key, six fiction programs, each program byte-equal to its seed (three_pigs_connectives differed by one comment line the person asked for) — fiction-port s-e3d0942d step 2 report -->
-    <p class="cap">Every change to a catalog is a diff a person reads. Six story programs were ported this way for 0.06 USD, each program byte-equal to its seed (one with a one-line comment change the person asked for). The diff above is the loop SDK's own dry run of plant's <code>extensions/visitor.llp</code> (<code>python -m metis_loop_sdk.catalog apply … --dry-run</code>); the proposal and approval lines are the gate's shape in the console.</p>
+    <!-- source: 0.0624 USD by the key, six fiction programs, each program byte-equal to its seed (three_pigs_connectives: one header-comment line changed by hand, since the loop could not make that edit) — fiction-port s-e3d0942d step 2 report -->
+    <p class="cap">Every change to a catalog is a diff a person reads. Six story programs were ported this way for 0.06 USD, each program byte-equal to its seed but one, whose header comment had one line changed by hand (the loop could not make that edit). The diff above is the loop SDK's own dry run of plant's <code>extensions/visitor.llp</code> (<code>python -m metis_loop_sdk.catalog apply … --dry-run</code>); the proposal and approval lines are the gate's shape in the console.</p>
   </div>
 </section>
 
@@ -393,7 +394,7 @@ Q wolf 0/1</code></pre>
     <h2>A dialog with the agent</h2>
     <!-- simulated from recorded turns: the utterances are rows of metis-catalog/domains/dog/intent/dog-corpus.tsv (sit, go to the kitchen, stand up, walk to april tag three);
          the intent JSON and the replies are the recorded day metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl (c1–c4: the py/Go parity fixture);
-         the dog's words are dog.llp's %% lines; the dog's name is the persona of intent/intent.yaml ("You are Nina, a quadruped robot dog") -->
+         the dog's words are dog.llp's %% lines; the dog's name is the persona of domains/dog/intent.yaml ("You are Nina, a quadruped robot dog") -->
     <div class="chat" id="chat" aria-live="polite">
       <div class="b me">sit</div>
       <div class="b rt"><span class="k">intent</span> {"verb": "LOCAL_ACTION", "args": {"action": "SIT_DOWN"}} → <span class="k">runtime</span> Accepted.</div>
@@ -410,7 +411,7 @@ Q wolf 0/1</code></pre>
       <div class="b dog">I have arrived at tag 3.</div>
     </div>
     <div class="chatbar"><button class="small" id="replay">Replay</button><span class="cap" style="margin:0">Nina, the dog of the catalog's <code>dog</code> package.</span></div>
-    <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the one in <code>intent/intent.yaml</code>.</p>
+    <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the persona of <code>domains/dog/intent.yaml</code>.</p>
   </div>
 </section>
 
@@ -487,11 +488,11 @@ python -m metis_catalog list [--domains] [--json]    # what both consoles list
   // the chat: bubbles appear one by one when scrolled into view (all at once under reduced motion)
   var chat = document.getElementById("chat"), bubbles = chat.querySelectorAll(".b"), timers = [];
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "off";
+  function hide() { bubbles.forEach(function (b) { b.style.opacity = 0; b.style.transform = "translateY(6px)"; }); }
   function play() {
     timers.forEach(clearTimeout); timers = [];
-    chat.classList.remove("on", "static");
-    bubbles.forEach(function (b) { b.style.opacity = ""; b.style.transform = ""; });
-    if (reduced) { chat.classList.add("static"); return; }
+    if (reduced) { bubbles.forEach(function (b) { b.style.opacity = ""; b.style.transform = ""; }); return; }
+    hide();
     var t = 0;
     bubbles.forEach(function (b) {
       t += b.classList.contains("rt") ? 500 : 900;
@@ -499,6 +500,7 @@ python -m metis_catalog list [--domains] [--json]    # what both consoles list
     });
   }
   document.getElementById("replay").addEventListener("click", play);
+  if (!reduced) hide();
   if ("IntersectionObserver" in window) {
     var seen = false, io = new IntersectionObserver(function (es) {
       if (!seen && es.some(function (e) { return e.isIntersecting; })) { seen = true; play(); io.disconnect(); }
