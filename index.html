@@ -36,6 +36,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 syste
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 code, pre, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.86em; }
+:not(pre) > code { overflow-wrap: anywhere; }   /* an inline path never widens the page */
 pre { background: var(--code); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; line-height: 1.45; margin: 0; }
 h1, h2, h3 { line-height: 1.2; margin: 0 0 .4em; letter-spacing: -0.01em; }
 h2 { font-size: 1.7rem; margin-top: 0; }
@@ -70,6 +71,7 @@ header nav a { color: var(--fg2); font-size: .95rem; }
 .card .repos { font-size: .92rem; margin-top: auto; }
 /* fragment */
 .two { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+.two > *, .card, .paper-row > * { min-width: 0; }   /* a grid child never widens the page for a <pre>'s longest line */
 @media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
 .notes { display: grid; gap: 10px; }
 .note { border-left: 3px solid var(--accent2); padding: 2px 0 2px 12px; font-size: .95rem; }
@@ -90,8 +92,8 @@ header nav a { color: var(--fg2); font-size: .95rem; }
 button.small { font: inherit; font-size: .9rem; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
 button.small:hover { border-color: var(--accent); }
 /* animation */
-.anim-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; }
-.anim { width: 100%; min-width: 760px; height: auto; display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.anim-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow: hidden; }
+.anim { width: 100%; height: auto; display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .anim text { fill: var(--fg); font-size: 13px; }
 .anim .lbl { fill: var(--fg2); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 .anim .box { fill: var(--bg2); stroke: var(--line); }
@@ -133,6 +135,11 @@ button.small:hover { border-color: var(--accent); }
   .b { transition: none; opacity: 1; transform: none; }
 }
 :root[data-motion="off"] .anim .a { animation: none !important; }
+/* a phone: the four panels stack (the viewBox is switched by matchMedia in the script); the flow arrows between them go */
+.anim.stacked .p2 { transform: translate(-230px, 180px); }
+.anim.stacked .p3 { transform: translate(-540px, 370px); }
+.anim.stacked .p4 { transform: translate(0, 340px); }
+.anim.stacked .flow { display: none; }
 /* papers, start */
 .papers { display: grid; gap: 12px; }
 .paper-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; align-items: center; }
@@ -177,12 +184,13 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
 <section id="loop" style="border-top:0; padding-top:0">
   <div class="wrap">
     <div class="anim-wrap" id="animwrap">
-      <svg class="anim" viewBox="0 0 960 330" role="img" aria-labelledby="animtitle animdesc">
+      <svg class="anim" id="anim" viewBox="0 0 960 330" role="img" aria-labelledby="animtitle animdesc">
         <title id="animtitle">A surprise closes the loop</title>
         <desc id="animdesc">The world shows a visitor the program has no rule for; the run's likelihood drops to zero; a surprise record goes to the loop; a person approves a proposed rule as a diff; the catalog gains extensions/visitor.llp; the probability refills; the device says: A visitor has watered me; my soil is moist again.</desc>
         <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--fg2)"/></marker></defs>
 
         <!-- 1. the world -->
+        <g class="panel p1">
         <text class="lbl" x="24" y="26">1 · the world</text>
         <rect class="box" x="24" y="36" width="200" height="130" rx="10" style="fill:var(--world)"/>
         <circle cx="190" cy="66" r="14" style="fill:var(--sun)"/>
@@ -192,9 +200,11 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <g class="a t2"><text x="34" y="56">tick 2</text></g>
         <g class="a t3"><text x="34" y="56">tick 3</text></g>
         <g class="a visitor"><text class="visitor" x="34" y="156">+ visitor</text></g>
-        <path class="arrow" d="M224 100 h26" marker-end="url(#ah)"/>
+        </g>
+        <path class="arrow flow" d="M224 100 h26" marker-end="url(#ah)"/>
 
         <!-- 2. the program; 3. the surprise -->
+        <g class="panel p2">
         <text class="lbl" x="254" y="26">2 · the program</text>
         <rect class="box" x="254" y="36" width="280" height="130" rx="10"/>
         <text class="row" x="266" y="58">dry_out : moist * sun -o dry</text>
@@ -205,9 +215,11 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <rect class="bar-bg" x="330" y="138" width="140" height="10" rx="5"/>
         <rect class="a bar" x="330" y="138" height="10" rx="5"/>
         <g class="a drop"><text class="visitor" x="254" y="188">3 · likelihood 0 — a surprise, recorded</text></g>
-        <path class="arrow" d="M534 100 h26" marker-end="url(#ah)"/>
+        </g>
+        <path class="arrow flow" d="M534 100 h26" marker-end="url(#ah)"/>
 
         <!-- 4. the loop -->
+        <g class="panel p3">
         <text class="lbl" x="564" y="26">4 · the loop, as a gate</text>
         <rect class="box" x="564" y="36" width="372" height="130" rx="10"/>
         <g class="a record">
@@ -224,17 +236,20 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         </g>
         <g class="a ask"><text x="576" y="158">approve? <tspan class="dim">[y/n]</tspan></text></g>
         <g class="a y"><text class="y" x="700" y="158">y</text></g>
-        <path class="arrow" d="M750 166 v22 h-250" marker-end="url(#ah)"/>
+        </g>
+        <path class="arrow flow" d="M750 166 v22 h-250" marker-end="url(#ah)"/>
 
         <!-- 5. the catalog grows; 6. the agent speaks -->
+        <g class="panel p4">
         <text class="lbl" x="24" y="212">5 · the catalog grows → 6 · the device speaks</text>
         <g class="a newrow"><text class="row new" x="24" y="236">extensions/visitor.llp → plant, served; P(run) refills on the next tick</text></g>
         <g class="a bubble">
           <g class="bubble">
-            <rect x="24" y="252" width="470" height="54" rx="14"/>
+            <rect x="24" y="252" width="440" height="54" rx="14"/>
             <text x="40" y="275">“A visitor has watered me; my soil is moist again.”</text>
             <text class="lbl" x="40" y="295">the plant, from the rule's %% line</text>
           </g>
+        </g>
         </g>
       </svg>
       <div class="anim-ctl">
@@ -451,6 +466,15 @@ python -m metis_catalog list [--domains] [--json]    # what both consoles list
   var q = new URLSearchParams(location.search);
   if (q.get("theme") === "dark" || q.get("theme") === "light") document.documentElement.dataset.theme = q.get("theme");
   if (q.get("motion") === "off") document.documentElement.dataset.motion = "off";
+
+  // the animation on a phone: its four panels stacked (CSS .stacked moves them; the viewBox follows)
+  var svg = document.getElementById("anim"), narrow = matchMedia("(max-width: 640px)");
+  function fit() {
+    svg.classList.toggle("stacked", narrow.matches);
+    svg.setAttribute("viewBox", narrow.matches ? "0 0 480 660" : "0 0 960 330");
+  }
+  if (narrow.addEventListener) narrow.addEventListener("change", fit); else narrow.addListener(fit);
+  fit();
 
   // the animation's Pause
   var wrap = document.getElementById("animwrap"), pause = document.getElementById("pause");
