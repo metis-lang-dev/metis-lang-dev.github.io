@@ -488,7 +488,7 @@ Q checked(dry) 0/3</code></pre>
 <section id="start">
   <div class="wrap">
     <h2>Get started</h2>
-<!-- verbatim lines: metis-lang/README.md "Using the compiler"; metis-catalog/CATALOG.md (the loader's CLI); metis-agentic-loop/README.md (the demo) -->
+<!-- verbatim lines: metis-lang/README.md "Using the compiler"; metis-catalog/CATALOG.md (the loader's CLI); metis-loop/README.md (a loop starts in a directory: cwd-root s-ddac2cbf); metis-agentic-loop/README.md (the demo) -->
 <pre><code><span class="hl-c"># metis-lang (README, "Using the compiler")</span>
 src/metisc --run corpus/wire_ports.llp     # replay a file's embedded
                                            # '#'-directive case (spec §8)
@@ -496,6 +496,9 @@ src/metisc --wire corpus/catalog/plant/plant.llp \
     --extension corpus/catalog/plant/extensions/visitor.llp
 <span class="hl-c"># metis-catalog (CATALOG.md)</span>
 python -m metis_catalog list [--domains] [--json]    # what both consoles list
+<span class="hl-c"># metis-loop (README)</span>
+cd DIR &amp;&amp; metis-loop           # the human loop's console over DIR (./run.sh: the same, in the background)
+METIS_CATALOG=DIR metis-loop   # the same, started elsewhere
 <span class="hl-c"># metis-agentic-loop (README)</span>
 ./demo.sh                                    # a fresh ~/lamp-demo-&lt;date&gt;-&lt;time&gt;; or ./demo.sh DIR</code></pre>
     <p class="cap">Each line as its README writes it; the repos say what to install first.</p>
