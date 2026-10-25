@@ -5,7 +5,7 @@ The one-page site for **metis-lang** and its stack — the language (LLP), the c
 ## What is here
 
 - `index.html` — the whole page: plain HTML, CSS and a little JavaScript. No framework, no build step, no tracker, no external script or font. Phone width, dark mode (`prefers-color-scheme`), and the animation honours `prefers-reduced-motion` (a static frame) and has a Pause control.
-- `assets/` — the organization's avatar (`metis-lang.jpg`, the GitHub org picture, copied here so nothing is hotlinked) and its resized copies for the favicon and the touch icon.
+- `assets/` — the organization's avatar (`metis-lang.jpg`, the GitHub org picture, copied here so nothing is hotlinked: the header's mark and the link preview), and the favicon and touch icon: the metis mark (the circle, no word), made by metis-lang's `brand/make_icons.py` (`favicon-32.png`, `favicon-192.png`, `apple-touch-icon.png` on white).
 - `README.md` — this file.
 
 ## How to edit
