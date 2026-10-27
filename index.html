@@ -538,7 +538,7 @@ Q checked(dry) 0/3</code></pre>
         <a class="frame" href="assets/world-alfworld.jpg" title="the frame at full size"><img src="assets/world-alfworld.jpg" alt="The ALFWorld world page: the kitchen's map with the agent at the microwave; the talk, the hierarchy of task, nav, access, grasp and place, the world card and the journal" width="1100" height="637" loading="lazy"></a>
       </article>
 
-      <!-- source: metis-worlds minihack/experiments/agent_run.py, the step-2a goal run (75 discovery levels, 51 won: its report.json), the episode room_medium_apple_newt_none_none, seed 1, 5 steps, won; the frame is web/map.html over that level's first screen (world/map_export.py of world/gen_level.py's package) -->
+      <!-- source: metis-worlds web/fixtures/minihack_room_medium_apple_newt_none_none.journal.jsonl (minihack/experiments/agent_run.py's journal of the episode, the step-2a goal run: seed 1, 5 steps, won); the frame is web/map.html over web/fixtures/minihack_room_medium_apple_newt.json (that level's first screen: world/map_export.py of world/gen_level.py's package) -->
       <article class="ex">
         <div class="txt">
           <h3>MiniHack: the small model in the loop</h3>
@@ -552,7 +552,7 @@ Q checked(dry) 0/3</code></pre>
 <span class="dim">       → said(see_here): the apple</span>
 <span class="who">model</span>  MOVE W · I move west.
 <span class="dim">       → on the stairs: won, in 5 steps</span></pre>
-          <p class="cap">Gemma E2B acts from the level's card with no rule yet: agent first, domain after. The runs are what the loop extracts the domain from (51 of 75 discovery levels won in this run). <a href="https://github.com/metis-lang-dev/metis-worlds/tree/main/minihack">metis-worlds/minihack</a>.</p>
+          <p class="cap">Gemma E2B acts from the level's card with no rule yet: agent first, domain after. The runs are what the loop extracts the domain from. The episode's <a href="https://github.com/metis-lang-dev/metis-worlds/blob/main/web/fixtures/minihack_room_medium_apple_newt_none_none.journal.jsonl">journal</a> and its <a href="https://github.com/metis-lang-dev/metis-worlds/blob/main/web/fixtures/minihack_room_medium_apple_newt.json">level</a>; <a href="https://github.com/metis-lang-dev/metis-worlds/tree/main/minihack">metis-worlds/minihack</a>.</p>
         </div>
         <a class="frame" href="assets/world-minihack.png" title="the frame at full size"><img src="assets/world-minihack.png" alt="A MiniHack room, 7 by 5: the staircase, an apple, a newt and the agent on the bottom row; the newt's card beside the map" width="900" height="270" loading="lazy"></a>
       </article>
