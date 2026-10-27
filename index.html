@@ -178,6 +178,18 @@ button.small:hover { border-color: var(--accent); }
 .qa-body { max-width: 72ch; }
 .qa-body p, .qa-body li { line-height: 1.6; }
 .qa-body ul { padding-left: 1.2em; }
+/* the consoles: one example per console and world, its transcript beside its frame (stacked on a phone) */
+.examples { display: grid; gap: 34px; margin-top: 18px; }
+.ex { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px 24px; align-items: start; }
+.ex.solo { grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+@media (max-width: 820px) { .ex { grid-template-columns: minmax(0, 1fr); } }
+.ex .txt { display: grid; gap: 10px; min-width: 0; }
+.ex h3 { margin: 0; }
+.ex a.frame { display: block; min-width: 0; }
+.ex img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 10px; background: #111218; }
+.ex .term { font-size: .78rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ex .term .who { color: #8a887f; }
+.ex .cap { margin: 0; }
 /* papers, start */
 .papers { display: grid; gap: 12px; }
 .paper-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; align-items: center; }
@@ -462,6 +474,107 @@ Q checked(dry) 0/3</code></pre>
     </div>
     <div class="chatbar"><button class="small" id="replay">Replay</button><span class="cap" style="margin:0">Nina, the dog of the catalog's <code>dog</code> package.</span></div>
     <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the persona of <code>domains/dog/intent.yaml</code>.</p>
+  </div>
+</section>
+
+<section id="consoles">
+  <div class="wrap">
+    <h2>The consoles</h2>
+    <p class="lede" style="max-width:68ch;color:var(--fg2)">The same packages run in two consoles, both started in a catalog directory, <code>cd metis-catalog &amp;&amp; …/run.sh --pkg NAME</code>: the agent console, where the person talks and the small model only types the intent, and the loop console, a state debugger over one REPL. Each world runs through the same runtime. One example each, a frame and its transcript, from the release checks of 2026-10-27 and the worlds' recordings.</p>
+    <div class="examples">
+
+      <!-- source: the release-r02 UI checks (s-be51860c step 1), metis-agent Go backend, `BACKEND=go run.sh --pkg dog` in metis-catalog, 2026-10-27 11:16; the journal's person lines, dispatches and spoken lines (go/results/live/session.jsonl) -->
+      <article class="ex">
+        <div class="txt">
+          <h3>The agent console: the dog</h3>
+<pre class="term"><span class="who">you</span>  sit
+<span class="dim">     → LOCAL_ACTION SIT_DOWN · done</span>
+<span class="who">dog</span>  I am sitting down now.
+<span class="who">you</span>  find the bottle
+<span class="dim">     → FIND bottle · progress, then done</span>
+<span class="who">dog</span>  I am starting to look for the bottle.
+<span class="who">dog</span>  I found the bottle.
+<span class="who">you</span>  go to the kitchen
+<span class="dim">     → NAVIGATE kitchen · refused: the way to it is closed</span>
+<span class="who">dog</span>  <span class="ask">Could you open the way to the kitchen?</span></pre>
+          <p class="cap">The model types one intent per line; the dog's package decides it, and its answer is the rule's line. The refusal becomes a question for the person. <a href="https://github.com/metis-lang-dev/metis-agent">metis-agent</a>: one wire, a Python and a Go backend.</p>
+        </div>
+        <a class="frame" href="assets/console-agent-dog.jpg" title="the frame at full size"><img src="assets/console-agent-dog.jpg" alt="The metis-agent console: the journal on the left; the orchestrator's lines and the catalog with the dog active on the right" width="896" height="560" loading="lazy"></a>
+      </article>
+
+      <!-- source: metis-loop `run.sh --pkg plant` in metis-catalog (BRAIN=ollama: no model turn), the REPL lines typed on the page, 2026-10-27; the rule line is domains/plant/plant.llp L24 -->
+      <article class="ex">
+        <div class="txt">
+          <h3>The loop console: the plant</h3>
+<pre class="term"><span class="who">llp&gt;</span> do +cmd_check   <span class="dim">·</span> step
+<span class="add">#1 check_moist</span>  −cmd_check $moist +checked(moist)
+<span class="who">llp&gt;</span> do +sun         <span class="dim">·</span> step
+<span class="add">#2 dry_out</span>  −moist −sun +dry
+<span class="who">llp&gt;</span> why dry
+<span class="dim">     dry_out, L24 [dyn] : moist * sun -o dry.</span>
+<span class="who">llp&gt;</span> do +cmd_water   <span class="dim">·</span> step
+<span class="add">#3 water</span>  −dry −cmd_water +moist +done(water)</pre>
+          <p class="cap">Interventions, beats and the proof of a token: the program is the plant's, opened from the catalog as certified. <a href="https://github.com/metis-lang-dev/metis-loop">metis-loop</a>.</p>
+        </div>
+        <a class="frame" href="assets/console-loop-plant.jpg" title="the frame at full size"><img src="assets/console-loop-plant.jpg" alt="The metis-loop console: the REPL stream with the plant's beats and a why trace; the catalog's working copy, certified, with its visitor extension" width="1100" height="455" loading="lazy"></a>
+      </article>
+
+      <!-- source: metis-worlds web/fixtures/alfworld_tomato_microwave_13.run.jsonl (a recorded turn of the live demo, alfworld/experiments/record_run.py), replayed by web/world.html?replay=…; the spoken lines are the recording's dlg-say rows, 8 of its 14 shown -->
+      <article class="ex">
+        <div class="txt">
+          <h3>ALFWorld: a task in words, a hierarchy at work</h3>
+<pre class="term"><span class="who">you</span>    put a tomato in the microwave
+<span class="dim">       → task FETCH TOMATO1 MICROWAVE1</span>
+<span class="who">agent</span>  Tomato 1 is in countertop 3: I go there.
+<span class="who">agent</span>  I take tomato 1 from countertop 3.
+<span class="who">agent</span>  I have tomato 1: to microwave 1.
+<span class="who">agent</span>  At microwave 1: I need it open.
+<span class="who">agent</span>  I open microwave 1.
+<span class="who">agent</span>  I put tomato 1 in microwave 1.
+<span class="who">agent</span>  Tomato 1 is in microwave 1: done.
+<span class="who">agent</span>  The task is done.</pre>
+          <p class="cap">One utterance, one typed intent; the director wakes the specialists in turn (nav, access, grasp, place) by their results, and no model chooses a step. A household scene of ALFRED in text mode. <a href="https://github.com/metis-lang-dev/metis-worlds/tree/main/alfworld">metis-worlds/alfworld</a>.</p>
+        </div>
+        <a class="frame" href="assets/world-alfworld.jpg" title="the frame at full size"><img src="assets/world-alfworld.jpg" alt="The ALFWorld world page: the kitchen's map with the agent at the microwave; the talk, the hierarchy of task, nav, access, grasp and place, the world card and the journal" width="1100" height="637" loading="lazy"></a>
+      </article>
+
+      <!-- source: metis-worlds minihack/experiments/agent_run.py, the step-2a goal run (75 discovery levels, 51 won: its report.json), the episode room_medium_apple_newt_none_none, seed 1, 5 steps, won; the frame is web/map.html over that level's first screen (world/map_export.py of world/gen_level.py's package) -->
+      <article class="ex">
+        <div class="txt">
+          <h3>MiniHack: the small model in the loop</h3>
+<pre class="term"><span class="who">task</span>   walk onto the goal: standing on it wins.
+<span class="who">sees</span>   a newt (monster) is 2 west of you; an apple (item) is 3 west of you; the goal (a staircase) is 4 west of you.
+<span class="who">model</span>  MOVE W · I will move west.
+<span class="who">model</span>  MOVE W · I will move west.
+<span class="dim">       → said(killed): the newt</span>
+<span class="who">model</span>  MOVE W · I will move west.
+<span class="who">model</span>  MOVE W · I move west.
+<span class="dim">       → said(see_here): the apple</span>
+<span class="who">model</span>  MOVE W · I move west.
+<span class="dim">       → on the stairs: won, in 5 steps</span></pre>
+          <p class="cap">Gemma E2B acts from the level's card with no rule yet: agent first, domain after. The runs are what the loop extracts the domain from (51 of 75 discovery levels won in this run). <a href="https://github.com/metis-lang-dev/metis-worlds/tree/main/minihack">metis-worlds/minihack</a>.</p>
+        </div>
+        <a class="frame" href="assets/world-minihack.png" title="the frame at full size"><img src="assets/world-minihack.png" alt="A MiniHack room, 7 by 5: the staircase, an apple, a newt and the agent on the bottom row; the newt's card beside the map" width="900" height="270" loading="lazy"></a>
+      </article>
+
+      <!-- source: the road closed loop on SUMO (road/experiments, sumo_host.Loop; road-2 s-3d2fda0b version A, merged; the architect's closing ruling 2026-10-27): straight, 30 vehicles, runs 1–2; the RSS parameters are sumo_host.rss_card() (semantic_world.lane VCLASS, EGO_RHO) -->
+      <article class="ex solo">
+        <div class="txt">
+          <h3>Road: the run card of the closed loop</h3>
+<pre class="term"><span class="hdr">road · SUMO closed loop · straight road, 30 vehicles · runs 1 / 2</span>
+collisions        0 / 0          violations     0 / 0
+arrival         176.1 / 144.7 s  latency        0 ticks
+responder cmds     89 / 23
+<span class="hdr">RSS parameters (response time ρ, braking, minimum distance)</span>
+ego               ρ 1.0 s
+passenger, truck  ρ 2.0 s · brake 4.0–8.0 / 3.0–6.0 m/s² · 1.0 m
+bicycle           ρ 1.0 s · brake 2.5–5.0 m/s² · 0.5 m
+pedestrian        ρ 0.5 s · brake 2.0–4.0 m/s² · 0.5 m</pre>
+          <p class="cap">The ego drives under the RSS rule, the responder braking only for a dangerous pair, among SUMO's default drivers; they accept gaps RSS does not, which is why the ego is slower than they are. The lever is the parameters and the planner's lane choice, never the rule. <a href="https://github.com/metis-lang-dev/metis-worlds/tree/main/road">metis-worlds/road</a>.</p>
+        </div>
+      </article>
+
+    </div>
   </div>
 </section>
 
