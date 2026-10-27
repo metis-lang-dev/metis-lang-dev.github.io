@@ -331,7 +331,7 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <h3>LLP: typed, staged, weighted linear-logic rules, read three ways at once — as proofs, as runs, as a measure.</h3>
         <!-- source: metis-lang/paper/metis.tex, abstract (draft 0.3, 2026-09-30): "exact parity chains … at 10^-9 across 200+" gates; "a growing Lean 4 mechanization of the metatheory" -->
         <p>The OCaml compiler <code>metisc</code>, the Python referee <code>metispy</code>, a header-only C++ runtime; exact parity at 10<sup>-9</sup> across 200+ gates; a growing Lean 4 mechanization of the metatheory.</p>
-        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">Behavior Programs as Measures over Proofs</a></em> (draft 0.3, 2026-09-30)</div>
+        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">Behavior Programs as Measures over Proofs</a></em> (draft 0.4, 2026-10-27)</div>
         <div class="repos"><a href="https://github.com/metis-lang-dev/metis-lang">metis-lang</a> · <a href="https://github.com/metis-lang-dev/metispy">metispy</a></div>
       </article>
       <article class="card" id="catalog">
@@ -340,7 +340,7 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <p>An agentic loop turns prose or a seed program into a package, exercises it against a simulated world, and proposes extensions — every write a diff a person approves.
         <!-- source: 29 packages — catalog-packages s-a2c529d6 step 1 report (28 at metis-catalog f25c758, the `packages` CI job) and road-collapse s-2a2cbea3 (road, the 29th, at 07d232b; CI run 39265998445: 33 units); eight RDDL worlds — rddl-worlds s-242c7c3f step 3 and rddl-watch s-cfe94dca step 1 reports -->
         29 packages today: story worlds, puzzles, planning, device domains, eight IPPC/RDDL worlds against pyRDDLGym.</p>
-        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-catalog/blob/master/paper/catalog.pdf">Behavior Catalogs in Practice</a></em> (draft 0.1, 2026-10-19)</div>
+        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-catalog/blob/master/paper/catalog.pdf">Behavior Catalogs in Practice</a></em> (draft 0.2, 2026-10-27)</div>
         <div class="repos"><a href="https://github.com/metis-lang-dev/metis-catalog">metis-catalog</a> · <a href="https://github.com/metis-lang-dev/metis-loop">metis-loop</a> · <a href="https://github.com/metis-lang-dev/metis-agentic-loop">metis-agentic-loop</a></div>
       </article>
       <article class="card" id="agent">
@@ -350,7 +350,7 @@ footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--f
         <p>The model maps an utterance to one typed intent, narrates, proposes, asks. Two agents share one kernel; the device gets smarter by catalog changes, never by retraining.
         <!-- source: py/Go parity on recorded days — metis-agent go/tools/dagent-parity.sh (RUNTIME-BINDING.md §7), docs/RUNTIME-PARITY.md -->
         A Python dev stack and a Go embedded runtime, at parity on recorded days.</p>
-        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-agent/blob/main/paper/agent.pdf">Small Models, Certified Behavior</a></em> (draft 0.1, 2026-10-19)</div>
+        <div class="paper">Paper: <em><a href="https://github.com/metis-lang-dev/metis-agent/blob/main/paper/agent.pdf">Small Models, Certified Behavior</a></em> (draft 0.2, 2026-10-27)</div>
         <div class="repos"><a href="https://github.com/metis-lang-dev/metis-agent">metis-agent</a> · <a href="https://github.com/metis-lang-dev/fsttm-web">fsttm-web</a></div>
       </article>
     </div>
@@ -455,7 +455,7 @@ Q checked(dry) 0/3</code></pre>
   <div class="wrap">
     <h2>A dialog with the agent</h2>
     <!-- simulated from recorded turns: the utterances are rows of metis-catalog/domains/dog/intent/dog-corpus.tsv (sit, go to the kitchen, stand up, walk to april tag three);
-         the intent JSON and the replies are the recorded day metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl (c1–c4: the py/Go parity fixture);
+         the intent JSON and the replies are the recorded day metis-catalog/domains/dog/goldens/day.out.jsonl (c1–c4: the py/Go parity fixture);
          the dog's words are dog.llp's %% lines; the dog's name is the persona of domains/dog/intent.yaml ("You are Nina, a quadruped robot dog") -->
     <div class="chat" id="chat" aria-live="polite">
       <div class="b me">sit</div>
@@ -473,7 +473,7 @@ Q checked(dry) 0/3</code></pre>
       <div class="b dog">I have arrived at tag 3.</div>
     </div>
     <div class="chatbar"><button class="small" id="replay">Replay</button><span class="cap" style="margin:0">Nina, the dog of the catalog's <code>dog</code> package.</span></div>
-    <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-agent/go/internal/dagent/testdata/days/dog.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the persona of <code>domains/dog/intent.yaml</code>.</p>
+    <p class="cap">Simulated from recorded turns: the utterances are rows of <code>domains/dog/intent/dog-corpus.tsv</code>; the intent JSON and every reply are the recorded day <code>metis-catalog/domains/dog/goldens/day.out.jsonl</code>, the fixture the Python and Go agents are held equal on; the dog's words are <code>dog.llp</code>'s <code>%%</code> lines. The model's part is the first line of each pair, one typed intent; the rest is the runtime's. Its name is the persona of <code>domains/dog/intent.yaml</code>.</p>
   </div>
 </section>
 
@@ -583,15 +583,15 @@ pedestrian        ρ 0.5 s · brake 2.0–4.0 m/s² · 0.5 m</pre>
     <h2>Papers</h2>
     <div class="papers">
       <div class="paper-row">
-        <div><strong>Behavior Programs as Measures over Proofs</strong><br><span class="muted">the language — draft 0.3, 2026-09-30</span></div>
+        <div><strong>Behavior Programs as Measures over Proofs</strong><br><span class="muted">the language — draft 0.4, 2026-10-27</span></div>
         <div><span class="status pdf">PDF</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.pdf">PDF</a> · <a href="https://github.com/metis-lang-dev/metis-lang/blob/master/paper/metis.tex">LaTeX</a> · <a href="https://github.com/metis-lang-dev/metis-lang">repo</a></div>
       </div>
       <div class="paper-row">
-        <div><strong>Behavior Catalogs in Practice</strong><br><span class="muted">the catalog and the loop — draft 0.1, 2026-10-19</span></div>
+        <div><strong>Behavior Catalogs in Practice</strong><br><span class="muted">the catalog and the loop — draft 0.2, 2026-10-27</span></div>
         <div><span class="status pdf">PDF</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-catalog/blob/master/paper/catalog.pdf">PDF</a> · <a href="https://github.com/metis-lang-dev/metis-catalog/blob/master/paper/catalog.tex">LaTeX</a> · <a href="https://github.com/metis-lang-dev/metis-catalog">repo</a></div>
       </div>
       <div class="paper-row">
-        <div><strong>Small Models, Certified Behavior</strong><br><span class="muted">the agent — draft 0.1, 2026-10-19</span></div>
+        <div><strong>Small Models, Certified Behavior</strong><br><span class="muted">the agent — draft 0.2, 2026-10-27</span></div>
         <div><span class="status pdf">PDF</span> &nbsp;<a href="https://github.com/metis-lang-dev/metis-agent/blob/main/paper/agent.pdf">PDF</a> · <a href="https://github.com/metis-lang-dev/metis-agent/blob/main/paper/agent.tex">LaTeX</a> · <a href="https://github.com/metis-lang-dev/metis-agent">repo</a></div>
       </div>
     </div>
